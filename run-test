@@ -1,2 +1,3 @@
 #!/bin/sh
+mkdir -p test/resources
 go  test -p 10 -timeout 20m -v -cover -covermode atomic ./...

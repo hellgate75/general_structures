@@ -31,10 +31,10 @@ var sample2File string = fmt.Sprintf("%s%c%s", sampleFolder, os.PathSeparator, "
 var sample3File string = fmt.Sprintf("%s%c%s", sampleFolder, os.PathSeparator, "test_create3.txt")
 
 func TestCreateFileIfNotExists(t *testing.T) {
-	CreateFolderIfNotExists(sampleFolder)
-	defer func() {
-		os.RemoveAll(sampleFolder)
-	}()
+	//	CreateFolderIfNotExists(sampleFolder)
+	//	defer func() {
+	//		os.RemoveAll(sampleFolder)
+	//	}()
 	err := CreateFileIfNotExists(sample1File)
 	if err != nil {
 		t.Fatal(fmt.Sprintf("Arisen unexpected error : %s", err.Error()))
@@ -52,10 +52,10 @@ func TestCreateFileIfNotExists(t *testing.T) {
 }
 
 func TestCreateFile(t *testing.T) {
-	CreateFolderIfNotExists(sampleFolder)
-	defer func() {
-		os.RemoveAll(sampleFolder)
-	}()
+	//	CreateFolderIfNotExists(sampleFolder)
+	//	defer func() {
+	//		os.RemoveAll(sampleFolder)
+	//	}()
 	file, err := CreateFile(sample2File)
 	if err != nil {
 		t.Fatal(fmt.Sprintf("Arisen unexpected error : %s", err.Error()))
@@ -74,10 +74,10 @@ func TestCreateFile(t *testing.T) {
 }
 
 func TestCreateFileAndUse(t *testing.T) {
-	CreateFolderIfNotExists(sampleFolder)
-	defer func() {
-		os.RemoveAll(sampleFolder)
-	}()
+	//	CreateFolderIfNotExists(sampleFolder)
+	//	defer func() {
+	//		os.RemoveAll(sampleFolder)
+	//	}()
 	var consumer func(*os.File) (interface{}, error) = func(f *os.File) (interface{}, error) {
 		f.Close()
 		return nil, nil
@@ -99,10 +99,10 @@ func TestCreateFileAndUse(t *testing.T) {
 }
 
 func TestDeleteIfExists(t *testing.T) {
-	CreateFolderIfNotExists(sampleFolder)
-	defer func() {
-		os.RemoveAll(sampleFolder)
-	}()
+	//	CreateFolderIfNotExists(sampleFolder)
+	//	defer func() {
+	//		os.RemoveAll(sampleFolder)
+	//	}()
 	file, err := os.Create(sample1File)
 	if err != nil {
 		t.Fatal(fmt.Sprintf("Unable to create file %s - error : %s", sample1File, err.Error()))
