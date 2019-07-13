@@ -15,6 +15,7 @@ install:
  - go get -u github.com/golang/go/src/cmd/gofmt
 
 script:
+ - mkdir -p test/resources
  - chmod -Rf 777 *
  - dep ensure -update -v
  - dep status
