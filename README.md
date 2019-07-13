@@ -6,7 +6,10 @@
 
 GoLang general structures libraries for supporting GoLanguage program development, and code write acceleration. 
 
-Any of package is extremely and exhaustively tested, and ready for use. Into any package you can find details about provided features, types and utilities
+Any of package is extremely and exhaustively tested, and ready for use. Into any package you can find details about provided features, types and utilities. 
+
+##### Related linked resources:
+* [general_utils](https://github.com/hellgate75/general_utils) - General purpose infrastructure components library (logging, parsers, networking, process, streams, errors, etc...) 
 
 ## Library details
 

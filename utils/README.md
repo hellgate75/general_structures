@@ -89,10 +89,10 @@
 
 ### TYPES
 
-#####type ArrayNav interface {
+##### type ArrayNav interface {
 #####	BaseArrayNav
 #####	Get() common.Type
-#####}
+##### }
     Generic Type Array Navigator Interface
 
 ##### func NewArrayNav(arr []common.Type) ArrayNav
