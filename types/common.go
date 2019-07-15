@@ -1,4 +1,4 @@
-package utils
+package types
 
 import (
 	"github.com/hellgate75/general_utils/log"
@@ -11,7 +11,7 @@ var logger log.Logger
 
 //Initialize Package logger
 func InitLogger() {
-	currentLogger, err := log.New("utils")
+	currentLogger, err := log.New("types")
 	if err != nil {
 		panic(err.Error())
 	}

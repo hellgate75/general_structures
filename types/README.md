@@ -1,4 +1,4 @@
-## package utils // import "github.com/hellgate75/general_structures/utils"
+## package types // import "github.com/hellgate75/general_structures/types"
 
 
 ### FUNCTIONS

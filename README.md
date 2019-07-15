@@ -17,7 +17,11 @@ Packages :
 
 * [base](/general_structures.md) - Default structures features
 * [builders](/builders) - Package that contains basic builder pattern features
-* [utils](/utils) - Package that contains basic types utilities (arrays, files, etc..)
+* [events](/events) - Package that contains event handling features and event-driven components
+* [flows](/flows) - Package that contains logic/job/work flows features and components
+* [logic](/logic) - Package that contains business and intelligence logic features and components
+* [plugins](/plugins) - Package that contains plug-ins features and components
+* [types](/types) - Package that contains types utilities (arrays, collection, list, files, etc..)
 
 All packages are internal logger ready, integrated and full working.
 
