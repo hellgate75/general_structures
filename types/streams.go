@@ -9,10 +9,13 @@ import (
 	"strconv"
 )
 
+//Function used to map en element to another into Collections or Streams
 type MapperFunc func(arg0 RowElement) RowElement
 
+//Function used to accumulate elements from a Collections or Streams to a singlw element (plurals to single)
 type BiArgumentsFunc func(arg0 RowElement, arg1 RowElement) RowElement
 
+//Function used to flatten mapping arrays or plurals in general to the list of elements inot the stream
 type ArrayArgumentFunc func(arg0 ...RowElement) Iterator
 
 func __listToSingular(args0 ...RowElement) Iterator {
@@ -93,7 +96,7 @@ var (
 	ARRAY_TO_SINGULAR_FUNC ArrayArgumentFunc = __arrayToSingular
 )
 
-//Describe Stream, dynamic approach to the Collections, within implem,ented dynamic filters, mapping (re-map types and values in the Collections), reductions (reducing values), summarize methods
+//Describe Stream, dynamic approach to the Collections, within implemented dynamic filters, mapping (re-map types and values in the Collections), flat mapping (flatten arrays into the list as arrays content), reductions (reducing values), summarize methods
 type Stream interface {
 	// Define parallel stream computation, accordingly to max number of CPUs
 	// Returns:

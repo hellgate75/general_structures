@@ -4,6 +4,7 @@ import (
 	"reflect"
 )
 
+// Element that Contains information about data and next node, it's used to maintain a hierarchy and sequence into the Collections components
 type CollectionElement struct {
 	Element RowElement
 	Next    *CollectionElement
