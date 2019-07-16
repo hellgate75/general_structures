@@ -161,4 +161,71 @@ func __runListTestCases(list List, t *testing.T) {
 	if value1 != expectedValue1 {
 		t.Fatal(fmt.Sprintf("Wrong value Getting at index <%x>, Expected <%v>, But Given <%v> !!", 1, expectedValue1, value1))
 	}
+	settedValue1 := RowElement(6)
+	settedUp1 := list.Set(1, settedValue1)
+	if !settedUp1 {
+		t.Fatal(fmt.Sprintf("Wrong outcome Setting Element at index <%x>, From <%v>, To <%v> !!", 1, value1, settedValue1))
+	}
+	value2 := list.Get(1)
+	expectedValue2 := settedValue1
+	if value2 != expectedValue2 {
+		t.Fatal(fmt.Sprintf("Wrong value Getting at index <%x>, Expected <%v>, But Given <%v> !!", 1, expectedValue2, value2))
+	}
+	addedValue1 := RowElement(9)
+	added1 := list.AddAfter(1, addedValue1)
+	if !added1 {
+		t.Fatal(fmt.Sprintf("Wrong outcome Adding Element after index <%x>, After Value <%v>, With Value <%v> !!", 1, value2, addedValue1))
+	}
+	value3 := list.Get(2)
+	expectedValue3 := addedValue1
+	if value3 != expectedValue3 {
+		t.Fatal(fmt.Sprintf("Wrong value Getting at index <%x>, Expected <%v>, But Given <%v> !!", 1, expectedValue3, value3))
+	}
+	expectedValue4 := RowElement(9)
+	removed1 := list.RemoveAt(1)
+	if !removed1 {
+		t.Fatal(fmt.Sprintf("Wrong outcome Removing Element after index <%x>, Removing Value <%v>, Replacing With <%v> !!", 1, value2, expectedValue4))
+	}
+	value4 := list.Get(1)
+	if value4 != expectedValue4 {
+		t.Fatal(fmt.Sprintf("Wrong value Removing at index <%x>, Expected <%v>, But Given <%v> !!", 1, expectedValue4, value4))
+	}
+	listAddingAll1 := __createBaseSecondDataArray()
+	listAddingAllLen1 := int64(len(listAddingAll1))
+	added2 := list.AddAllAfter(1, listAddingAll1)
+	if listAddingAllLen1 != added2 {
+		t.Fatal(fmt.Sprintf("Wrong value for Number of Added Elements at index <%x>, Expected <%v>, But Given <%v> !!", 1, listAddingAllLen1, added2))
+	}
+	expectedValue5 := listAddingAll1[0]
+	value5 := list.Get(2)
+	if expectedValue5 != value5 {
+		t.Fatal(fmt.Sprintf("Wrong value of Added Element taken at index <%x>, Expected <%v>, But Given <%v> !!", 2, expectedValue5, value5))
+	}
+	expectedValue6 := listAddingAll1[1]
+	value6 := list.Get(3)
+	if expectedValue6 != value6 {
+		t.Fatal(fmt.Sprintf("Wrong value of Added Element taken at index <%x>, Expected <%v>, But Given <%v> !!", 3, expectedValue6, value6))
+	}
+	listAddingAll2 := __createBaseSecondCollection()
+	listAddingAllLen2 := int64(len(listAddingAll1))
+	added3 := list.AddCollectionAfter(3, listAddingAll2)
+	if listAddingAllLen2 != added3 {
+		t.Fatal(fmt.Sprintf("Wrong value for Number of Added Collection Elements at index <%x>, Expected <%v>, But Given <%v> !!", 1, listAddingAllLen2, added3))
+	}
+	expectedValue7 := listAddingAll1[0]
+	value7 := list.Get(4)
+	if expectedValue7 != value7 {
+		t.Fatal(fmt.Sprintf("Wrong value of Added Collection Element taken at index <%x>, Expected <%v>, But Given <%v> !!", 4, expectedValue7, value7))
+	}
+	expectedValue8 := listAddingAll1[1]
+	value8 := list.Get(5)
+	if expectedValue8 != value8 {
+		t.Fatal(fmt.Sprintf("Wrong value of Added Collection Element taken at index <%x>, Expected <%v>, But Given <%v> !!", 5, expectedValue8, value8))
+	}
+	expectedString := "List{size: '9', sampleData: <1 9 6 7 6 ...>}"
+	listString := fmt.Sprintf("%v", list)
+	if listString != expectedString {
+		t.Fatal(fmt.Sprintf("List String() value is wrong, Expected <%v> But Given <%v>", expectedString, listString))
+	}
+
 }

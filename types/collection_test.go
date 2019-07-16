@@ -35,12 +35,16 @@ func __createBaseCollection() Collection {
 	return coll
 }
 
-func __createBaseSecondCollection() Collection {
+func __createBaseSecondDataArray() RowArray {
 	var elements []RowElement
 	elements = append(elements, RowElement(6))
 	elements = append(elements, RowElement(7))
+	return RowArray(elements)
+}
+
+func __createBaseSecondCollection() Collection {
 	var coll Collection = NewCollection(__createBaseType())
-	coll.AddAll(elements)
+	coll.AddAll(__createBaseSecondDataArray())
 	return coll
 }
 
@@ -48,8 +52,8 @@ func TestNewCollection(t *testing.T) {
 	collection := NewCollection(__createBaseType())
 	collection.Add(__createBaseDataElement())
 	collection.AddAll(__createBaseDataArray())
-	if collection.Size() != int64(6) {
-		t.Fatal(fmt.Sprintf("Invalid Collection size %x, instead of %x", collection.Size(), 6))
+	if collection.Empty() {
+		t.Fatal("It is Invalid that Collection is Empty!!!")
 	}
 	if !collection.Iterator().HasNext() {
 		t.Fatal("Empty iterator found!!!")
@@ -64,8 +68,8 @@ func TestNewCollection(t *testing.T) {
 		t.Fatal(fmt.Sprintf("Collection type is invalid, Expected <%v> But Given <%v>", __createBaseType(), collection.GetType()))
 	}
 	collection.Remove(__createBaseDataElement())
-	if collection.Size() != int64(5) {
-		t.Fatal(fmt.Sprintf("Invalid Collection size %x, instead of %x", collection.Size(), 5))
+	if collection.Empty() {
+		t.Fatal("It is Invalid that Collection is Empty!!!")
 	}
 }
 
@@ -83,8 +87,13 @@ func TestNewCollectionWithArray(t *testing.T) {
 	if collection.GetType() != __createBaseType() {
 		t.Fatal(fmt.Sprintf("Collection type is invalid, Expected <%v> But Given <%v>", __createBaseType(), collection.GetType()))
 	}
-	if collection.Size() != int64(5) {
-		t.Fatal(fmt.Sprintf("Invalid Collection size %x, instead of %x", collection.Size(), 5))
+	if collection.Empty() {
+		t.Fatal("It is Invalid that Collection is Empty!!!")
+	}
+	expectedString := "Collection{size: '5', sampleData: <1 5 3 2 4 >}"
+	collectionString := fmt.Sprintf("%v", collection)
+	if collectionString != expectedString {
+		t.Fatal(fmt.Sprintf("Collection type is invalid, Expected <%v> But Given <%v>", expectedString, collectionString))
 	}
 }
 
@@ -103,8 +112,18 @@ func TestCloneCollection(t *testing.T) {
 	if collection.GetType() != __createBaseType() {
 		t.Fatal(fmt.Sprintf("Collection type is invalid, Expected <%v> But Given <%v>", __createBaseType(), collection.GetType()))
 	}
-	if collection.Size() != int64(7) {
-		t.Fatal(fmt.Sprintf("Invalid Collection size %x, instead of %x", collection.Size(), 7))
+	if collection.Empty() {
+		t.Fatal("It is Invalid that Collection is Empty!!!")
+	}
+	expectedString := "Collection{size: '7', sampleData: <1 5 3 2 4 ...>}"
+	collectionString := fmt.Sprintf("%v", collection)
+	if collectionString != expectedString {
+		t.Fatal(fmt.Sprintf("Collection type is invalid, Expected <%v> But Given <%v>", expectedString, collectionString))
+	}
+	collSize := collection.Stream().Count().Int64()
+	expectedSize := int64(7)
+	if expectedSize != collSize {
+		t.Fatal(fmt.Sprintf("Collection stream size is wrong, Expected <%v> But Given <%v>", expectedSize, collSize))
 	}
 }
 
@@ -122,7 +141,26 @@ func TestIteratorToCollection(t *testing.T) {
 	if collection.GetType() != __createBaseType() {
 		t.Fatal(fmt.Sprintf("Collection type is invalid, Expected <%v> But Given <%v>", __createBaseType(), collection.GetType()))
 	}
-	if collection.Size() != int64(5) {
-		t.Fatal(fmt.Sprintf("Invalid Collection size %x, instead of %x", collection.Size(), 5))
+	if collection.Empty() {
+		t.Fatal("It is Invalid that Collection is Empty!!!")
+	}
+	collection.Clear()
+	if !collection.Empty() {
+		t.Fatal("It is Invalid that Collection is not Empty!!!")
+	}
+	expectedFirst := RowElement(nil)
+	first := collection.First()
+	if first != expectedFirst {
+		t.Fatal(fmt.Sprintf("Collection first value after Clear() is invalid, Expected <%v> But Given <%v>", expectedFirst, first))
+	}
+	expectedLast := RowElement(nil)
+	last := collection.Last()
+	if last != expectedLast {
+		t.Fatal(fmt.Sprintf("Collection last value after Clear() is invalid, Expected <%v> But Given <%v>", expectedLast, last))
+	}
+	expectedString := "Collection{size: '0', sampleData: <>}"
+	collectionString := fmt.Sprintf("%v", collection)
+	if collectionString != expectedString {
+		t.Fatal(fmt.Sprintf("Collection String() value is wrong, Expected <%v> But Given <%v>", expectedString, collectionString))
 	}
 }

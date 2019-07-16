@@ -1,7 +1,7 @@
 package types
 
 import (
-	//	"fmt"
+	"fmt"
 	"reflect"
 	"sync"
 )
@@ -23,11 +23,11 @@ type Collection interface {
 	// Returns:
 	//    Iterator Array iterator component that contains all list elements
 	Iterator() Iterator
-	// Returns the size of the Collection
+	// Verify if the Collection is Empty
 	// Returns:
-	//    int64 Number of elements in the Collection
-	Size() int64
-	// Add a new element in the Collection
+	//    bool State that desribes if the Collection is Empty
+	Empty() bool
+	// Add a new element at the end of the Collection
 	// Parameters:
 	//    item (types.RowElement) Element to have been added into the list
 	// Returns:
@@ -66,14 +66,25 @@ type Collection interface {
 	// Returns:
 	//    types.RowElement Last Element of the Collection
 	Last() RowElement
+	// Clear All Elements of the Collection and reset the collection as Empty
+	Clear()
+	// Print resume of the Collection
+	// Returns:
+	//    string Collection descriptive list
+	String() string
+	// Return a Stream within Collection elements
+	// Returns:
+	//    types.Stream Stream containing List elements
+	Stream() Stream
 }
 
 type __collectionStruct struct {
-	__rootElement *CollectionElement
-	__lastElement *CollectionElement
-	__type        reflect.Type
-	__size        int64
-	__lock        sync.RWMutex
+	__rootElement   *CollectionElement
+	__lastElement   *CollectionElement
+	__type          reflect.Type
+	__size          int64
+	__lock          sync.RWMutex
+	__componentName string
 }
 
 func (collection *__collectionStruct) GetType() reflect.Type {
@@ -84,8 +95,15 @@ func (collection *__collectionStruct) Iterator() Iterator {
 	return NewIterator(collection.__type, collection.__rootElement)
 }
 
-func (collection *__collectionStruct) Size() int64 {
-	return collection.__size
+func (collection *__collectionStruct) Empty() bool {
+	return collection.__size == int64(0)
+}
+
+func __makeBaseCollectionElement(item RowElement) *CollectionElement {
+	return &CollectionElement{
+		Element: item,
+		Next:    nil,
+	}
 }
 
 func (collection *__collectionStruct) Add(item RowElement) bool {
@@ -94,10 +112,7 @@ func (collection *__collectionStruct) Add(item RowElement) bool {
 		collection.__lock.Unlock()
 	}()
 	collection.__lock.Lock()
-	element := &CollectionElement{
-		Element: item,
-		Next:    nil,
-	}
+	element := __makeBaseCollectionElement(item)
 	if collection.__rootElement == nil {
 		collection.__rootElement = element
 		collection.__size++
@@ -172,6 +187,11 @@ func (collection *__collectionStruct) Remove(item RowElement) bool {
 	if collection.__rootElement == nil {
 		return state
 	}
+	defer func() {
+		recover()
+		collection.__lock.Unlock()
+	}()
+	collection.__lock.Lock()
 	if __equals(collection.__rootElement.Element, item) {
 		collection.__rootElement = collection.__rootElement.Next
 		if collection.__rootElement == nil || collection.__rootElement.Next == nil {
@@ -201,6 +221,11 @@ func (collection *__collectionStruct) Remove(item RowElement) bool {
 
 func (collection *__collectionStruct) RemoveAll(item RowElement) int64 {
 	var state int64 = int64(0)
+	defer func() {
+		recover()
+		collection.__lock.Unlock()
+	}()
+	collection.__lock.Lock()
 	for collection.__rootElement != nil && __equals(collection.__rootElement.Element, item) {
 		collection.__rootElement = collection.__rootElement.Next
 		collection.__size--
@@ -234,11 +259,56 @@ func (collection *__collectionStruct) RemoveAll(item RowElement) int64 {
 }
 
 func (collection *__collectionStruct) First() RowElement {
+	if collection.__rootElement == nil {
+		return RowElement(nil)
+	}
 	return collection.__rootElement.Element
 }
 
 func (collection *__collectionStruct) Last() RowElement {
+	if collection.__lastElement == nil {
+		return RowElement(nil)
+	}
 	return collection.__lastElement.Element
+}
+
+func (collection *__collectionStruct) Clear() {
+	defer func() {
+		recover()
+		collection.__lock.Unlock()
+	}()
+	collection.__lock.Lock()
+	collection.__rootElement = nil
+	collection.__lastElement = nil
+	collection.__size = int64(0)
+
+}
+
+const (
+	SAMPLE_SIZE int = 5
+)
+
+func (collection *__collectionStruct) String() string {
+	var out string = ""
+	if !collection.Empty() {
+		iter := collection.Iterator()
+		for i := 0; i < SAMPLE_SIZE; i++ {
+			if iter.HasNext() {
+				out = fmt.Sprintf("%s%v ", out, iter.Next())
+			} else {
+				break
+			}
+
+		}
+		if iter.HasNext() {
+			out = fmt.Sprintf("%s...", out)
+		}
+	}
+	return fmt.Sprintf("%s{size: '%x', sampleData: <%s>}", collection.__componentName, collection.__size, out)
+}
+
+func (collection *__collectionStruct) Stream() Stream {
+	return __newStream(collection.GetType(), __cloneCollectionElementDescending(collection.__rootElement), false)
 }
 
 // Create New Collection component
@@ -248,10 +318,11 @@ func (collection *__collectionStruct) Last() RowElement {
 //   types.Collection Collection component instance
 func NewCollection(t reflect.Type) Collection {
 	return &__collectionStruct{
-		__rootElement: nil,
-		__lastElement: nil,
-		__type:        t,
-		__size:        int64(0),
+		__rootElement:   nil,
+		__lastElement:   nil,
+		__type:          t,
+		__size:          int64(0),
+		__componentName: "Collection",
 	}
 }
 
@@ -263,10 +334,11 @@ func NewCollection(t reflect.Type) Collection {
 //   types.Collection Collection component instance
 func NewCollectionWithArray(t reflect.Type, arr RowArray) Collection {
 	coll := __collectionStruct{
-		__rootElement: nil,
-		__lastElement: nil,
-		__type:        t,
-		__size:        int64(0),
+		__rootElement:   nil,
+		__lastElement:   nil,
+		__type:          t,
+		__size:          int64(0),
+		__componentName: "Collection",
 	}
 	coll.AddAll(arr)
 	return &coll
@@ -279,10 +351,11 @@ func NewCollectionWithArray(t reflect.Type, arr RowArray) Collection {
 //   types.Collection Collection component instance
 func CloneCollection(coll Collection) Collection {
 	collect := __collectionStruct{
-		__rootElement: nil,
-		__lastElement: nil,
-		__type:        coll.GetType(),
-		__size:        int64(0),
+		__rootElement:   nil,
+		__lastElement:   nil,
+		__type:          coll.GetType(),
+		__size:          int64(0),
+		__componentName: "Collection",
 	}
 	collect.AddCollection(coll)
 	return &collect
