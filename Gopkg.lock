@@ -12,7 +12,7 @@
     "log/parser",
   ]
   pruneopts = "UT"
-  revision = "d591ec9e91db994ebf74f008d95548b826be7322"
+  revision = "82d6bd1b6df3dd290a193cefa172728f67ebd4a4"
 
 [[projects]]
   digest = "1:ba852707958e39694e7f64328008287892adf9b1aed0174480e2f50e0c23e521"
