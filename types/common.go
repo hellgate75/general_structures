@@ -9,7 +9,7 @@ import (
 
 var logger log.Logger
 
-//Initialize Package logger
+//Initialize package logger if not started
 func InitLogger() {
 	currentLogger, err := log.New("types")
 	if err != nil {

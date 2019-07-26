@@ -6,6 +6,7 @@ import (
 
 var logger log.Logger
 
+//Initialize package logger if not started
 func InitLogger() {
 	currentLogger, err := log.New("events")
 	if err != nil {
