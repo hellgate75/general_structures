@@ -2,14 +2,23 @@
 
 
 [[projects]]
+  digest = "1:582b704bebaa06b48c29b0cec224a6058a09c86883aaddabde889cd1a5f73e1b"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "0cd6bf5da1e1c83f8b45653022c74f71af0538a4"
+  version = "v1.1.1"
+
+[[projects]]
   branch = "master"
-  digest = "1:2a5d9f43a3c060c00430168ccc84443819a76be47d82d22485c076d97647f816"
+  digest = "1:f7d8e6b64f916e961dc65973b7ab6c67b853a516bd1f44024ee813324c1a8e43"
   name = "github.com/hellgate75/general_utils"
   packages = [
     "common",
     "errors",
     "log",
     "log/parser",
+    "streams",
   ]
   pruneopts = "UT"
   revision = "82d6bd1b6df3dd290a193cefa172728f67ebd4a4"
@@ -34,9 +43,11 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/google/uuid",
     "github.com/hellgate75/general_utils/common",
     "github.com/hellgate75/general_utils/errors",
     "github.com/hellgate75/general_utils/log",
+    "github.com/hellgate75/general_utils/streams",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
